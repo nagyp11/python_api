@@ -6,15 +6,8 @@ import os
 
 app = FlaskAPI(__name__)
 
-#subprocess.call('/home/nagyp11/inputprocess.sh')
-#readTranslate = open('/home/nagyp11/process/vereb.res.acc', 'r')
-#print(readTranslate.read().decode('utf8'))
-#readTranslate.close()
-
 cwd = os.getcwd()
 processDir = cwd+'/process'
-
-
 
 @app.route('/translate', methods=['GET', 'POST'])
 def translate():
