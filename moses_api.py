@@ -9,6 +9,24 @@ app = FlaskAPI(__name__)
 cwd = os.getcwd()
 processDir = cwd+'/process'
 
+@app.route('/slowtranslate', methods=['GET', 'POST'])
+def slow_translate():
+	if not os.path.isdir(processDir):
+		os.mkdir(processDir)
+	text = request.data.get('text', '')
+	if text == '':
+		return {'status': '400', 'info': 'No text added' }
+	print(text)
+	f = open(processDir+'/input.noacc', "w")
+	f.write(text)
+	f.close()
+	subprocess.call(cwd+'/inputprocess.sh')
+	f = open(processDir+'/output.res.acc', 'r')
+	preprocessed = f.read()
+	f.close()
+	return {'status': '200', 'info': 'success', 'response': preprocessed }
+
+
 @app.route('/translate', methods=['GET', 'POST'])
 def translate():
 	if not os.path.isdir(processDir):
@@ -24,7 +42,7 @@ def translate():
 	f = open(processDir+'/input.noacc.tokenized.lc.noxml', 'r')
 	preprocessed = f.read()
 	f.close()
-	return {'status': '200', 'info': 'success', 'text': preprocessed }
+	return {'status': '200', 'info': 'success/preprocessedonly', 'response': preprocessed }
 
 @app.route('/', methods=['GET'])
 def info():
